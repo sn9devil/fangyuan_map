@@ -12,7 +12,7 @@ header = {
 
 
 def house_url(url, db_name='fangyuan'):
-    dbClient = MongoClient(db_name).db
+    dbClient = MongoClient(db_name).Client()
     db_set = dbClient['base_url']
     html = requests.get(url, headers=header)
     html.encoding = 'utf8'

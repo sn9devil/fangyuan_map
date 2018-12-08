@@ -6,7 +6,20 @@ class MongoClient():
         self.client = pymongo.MongoClient(host=host,port=port)
         self.db = self.client[db_name]
 
+    def Client(self):
+        return self.db
+
+
+# func = '''
+#                 function(obj,prev)
+#                 {
+#                     prev.sum++;
+#                 }
 #
-b = MongoClient('fangyuan')
-myset = b.db['base_url']
-myset.aggregate({'$group':{'_id':'$community','num':{'$sum':1}}})
+# '''
+# b = MongoClient('fangyuan')
+# myset = b.db['base_url']
+# a = myset.group(['community'],None,{'sum':0},func)
+# myset.update()
+# print(a)
+#  myset.aggregate({'$group':'group'})
