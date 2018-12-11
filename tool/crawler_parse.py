@@ -41,9 +41,9 @@ def parse(request_url):
 
 
 if __name__ == '__main__':
-    db = MongoClient('fangyuan').Client()
-    myset = db['base_url']
-    housing = db['housing']
+    myset = MongoClient('fangyuan', 'base_url').Client()
+    housing = MongoClient('fangyuan', 'housing').Client()
+    erroe_url = MongoClient('fangyuan', 'erroe_url').Client()
     url_list = myset.find()
     num = 0
     for i in url_list:
@@ -56,7 +56,7 @@ if __name__ == '__main__':
                 content = parse(i['url'])
             except Exception as e:
                 print('爬取失败' + i['url'])
-                db['erroe_url'].insert_one({'url':i['url']})
+                erroe_url.insert_one({'url':i['url']})
 
         housing.update_one({'url': i['url']}, {'$set': content}, True)
         print(content)
