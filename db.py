@@ -31,11 +31,26 @@ class MongoClient():
 
         '''
         num = self.set.group(['position'], None, {'sum': 0}, func)
-        #去除未知领域
-        return num[0:-1]
+        big_30 = [i for i in num if i['sum']>30]
+        return big_30
+
+    def community_num(self):
+        func = '''
+                        function(obj,prev)
+                        {
+                            prev.sum++;
+                        }
+
+        '''
+        num = self.set.group(['community'], None, {'sum': 0}, func)
+        return num
 
 housingDB = MongoClient('fangyuan','housing')
-print(housingDB.position_num())
+print(housingDB.community_num())
+# id = housingDB.find_one()['_id']
+# print(id)
+# housingDB.update_one({'_id': id}, {'$set': {'ceshi':'ceshi'}})
+
 # func = '''
 #                 function(obj,prev)
 #                 {

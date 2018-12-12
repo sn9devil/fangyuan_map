@@ -102,6 +102,19 @@ function qu_addMarke(data,num){
      });
 }
 
+//positions 标志
+positions =[]
+function position_addmarke(data, num) {
+    geocoder = new AMap.Geocoder();
+    geocoder.getLocation('广州市'+data, function(status, result){
+        positions.push(new AMap.Marker({
+            position: result.geocodes[0].location,
+            content: '<div class="qutag"><div class="diqu">'+data+'<p>'+num+'套</p></div></div>',
+            offset: new AMap.Pixel(-15, -15)
+        }))
+    })
+}
+
 
 //AJAX
 function get_district() {
@@ -130,13 +143,13 @@ function get_position() {
         success: function (data, status) {
             for (var i = 0, l = data.length; i < l; i++) {
                 //alert(i);
-                qu_addMarke(data[i]['position'], parseInt(data[i]['sum']))
+                position_addmarke(data[i]['position'], parseInt(data[i]['sum']))
             }
         }
     })
 
 }
-
+get_position();
 
 
 
@@ -158,20 +171,39 @@ function forEach_addevent(lists, func){
         eval(func);
     })
 }
-//缩放到1公里时，清除市标志
+
+function forEach_addevent_position(lists){
+    lists.forEach(function (item, num) {
+        AMap.event.addListener(item, 'click', function () {
+            map.setZoomAndCenter(15,item.getPosition());
+        });
+    })
+}
+
 tag = 0
 map.on('zoomchange', function(e) {
+
     if(map.getZoom()>12) {
+        //第一次缩放
         if(tag===0){
+            cluster = new AMap.MarkerClusterer(map, positions, {gridSize: 60,minClusterSize:10,maxZoom:5});
             forEach_addevent(markers, 'item.hide()');
-            get_position();
-            tag = 1;
+            forEach_addevent_position(positions);
+            tag = 12;
+        }
+        //缩放到zoom:13时，清除市标志,添加position标志
+        if(tag===13){
+            forEach_addevent(markers, 'item.hide()');
+            forEach_addevent(positions,'item.show()');
+            tag = 12;
         }
     }
-    if(map.getZoom()<13){
-        if(tag===1){
+    //缩放到zoom:12时，添加市标志,删除position标志
+    if(map.getZoom()<13) {
+        if(tag===12){
             forEach_addevent(markers, 'item.show()');
-            tag = 0;
+            forEach_addevent(positions,'item.hide()');
+            tag =13
         }
     }
 });
@@ -181,3 +213,4 @@ map.on('zoomchange', function(e) {
 map.on('complete', function(e) {
     qu_markers_event();
 })
+
