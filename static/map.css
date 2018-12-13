@@ -1,9 +1,23 @@
 html,
 body,
 #container {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 }
+
+#container {
+    float:left;
+    width: 80%;
+    height: 100%;
+}
+
+#content {
+    width: 20%;
+    height: 100%;
+    float:right;
+    background-color:red;
+}
+
 div.qutag{
     background-color: hsla(180, 100%, 50%, 0.7);
     height: 80px;
@@ -30,6 +44,43 @@ div.qutag:hover {
     text-align: center;
 
     font: 15px "Hiragino Sans GB", "Microsoft Yahei UI", "Microsoft Yahei", 微软雅黑, "Segoe UI", Tahoma, "宋体b8b\4 f53", SimSun, sans-serif;
+}
+
+
+.fangzi {
+    height: 28px;
+    line-height: 28px;
+    cursor: pointer;
+    text-align: center;
+    white-space:nowrap;
+    display: inline-block;
+    background-color: rgb(57, 172, 106);
+
+}
+.wenzi{
+    padding: 10px;
+    font-style: normal;
+    font-variant-ligatures: normal;
+    font-variant-caps: normal;
+    font-variant-numeric: normal;
+    font-variant-east-asian: normal;
+    font-weight: normal;
+    font-stretch: normal;
+    font-size: 12px;
+    color: rgb(255, 255, 255);
+    font-family: "Hiragino Sans GB", "Microsoft Yahei UI", "Microsoft Yahei", 微软雅黑, "Segoe UI", Tahoma, "宋体b8b\4 f53", SimSun, sans-serif;
+}
+.in{
+    display:block;
+    width:0;
+    height:0;
+    border-width:13px 13px 0;
+    border-style:solid;
+    border-color: rgb(57, 172, 106) transparent transparent;/*黄 透明 透明 */
+    position:absolute;
+    top:22px;
+    left:15px;
+
 }
 /*.amap-icon img,*/
 /*.amap-marker-content img{*/

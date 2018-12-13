@@ -45,8 +45,29 @@ class MongoClient():
         num = self.set.group(['community'], None, {'sum': 0}, func)
         return num
 
+
+    def community_num(self):
+        func = '''
+                        function(obj,prev)
+                        {
+                            prev.sum++;
+                        }
+
+        '''
+        num = self.set.group(['community'], None, {'sum': 0}, func)
+        return num
+
+    def find(self, **kwargs):
+        content =self.set.find(kwargs)
+        data = []
+        for i in content:
+            data.append(i)
+        return data
+
+
 housingDB = MongoClient('fangyuan','housing')
-print(housingDB.community_num())
+# print(housingDB.community_num())
+# print(housingDB.find(price=5000))
 # id = housingDB.find_one()['_id']
 # print(id)
 # housingDB.update_one({'_id': id}, {'$set': {'ceshi':'ceshi'}})

@@ -2,7 +2,7 @@
 var map = new AMap.Map('container', {
     resizeEnable: true, //是否监控地图容器尺寸变化
     zoom:10, //初始化地图层级
-    zooms:[10,15],//限制缩放级别
+    zooms:[10,18],//限制缩放级别
     center: [113.264385,23.129112] //初始化地图中心点
 });
 
@@ -116,6 +116,24 @@ function position_addmarke(data, num) {
 }
 
 
+communitys =[]
+function community_addmarke(data, num) {
+    data.forEach(function(item,num){
+        var community = new AMap.Marker({
+            position: item['lnglat'],
+            content: '<div class="fangzi"><i class="wenzi">'+item['name']+item['num']+'套</i></div><div class="in"></div>',
+            offset: new AMap.Pixel(-15, -15),
+            extData: {'name':item['name']}
+        })
+        communitys.push(community)
+        community.on('click', function (e) {
+            get_data(community.getExtData().name);
+        })
+    })
+}
+community_addmarke(community_data)
+
+
 //AJAX
 function get_district() {
     $.ajax({
@@ -147,23 +165,25 @@ function get_position() {
             }
         }
     })
-
 }
 get_position();
 
 
+function get_data(name) {
+    $.ajax({
+        type: "get",
+        url: "/api/getData",
+        data: {'community':name},
+        contentType: 'application/json',
+        success: function (data, status) {
+            alert(data[0]['community']);
 
-// function addMarker(dizhi) {
-//     marker = new AMap.Marker({
-//         icon: "//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png",
-//         content:'<div style="background-color: hsla(180, 100%, 50%, 0.7); height: 50px; width: 50px; border: 1px solid hsl(180, 100%, 40%); border-radius: 25px; box-shadow: hsl(180, 100%, 50%) 0px 0px 1px;">wwwe</div>',
-//         position: dizhi,
-//         offset: new AMap.Pixel(-13, -30),
-//
-//     });
-//     marker.setMap(map);
-// }
-// addMarker(convert())
+        }
+    })
+}
+// get_data();
+
+
 
 
 function forEach_addevent(lists, func){
@@ -175,37 +195,70 @@ function forEach_addevent(lists, func){
 function forEach_addevent_position(lists){
     lists.forEach(function (item, num) {
         AMap.event.addListener(item, 'click', function () {
-            map.setZoomAndCenter(15,item.getPosition());
+            map.setZoomAndCenter(16,item.getPosition());
         });
     })
 }
 
-tag = 0
+//缩放 显示
+qu_tag = 0
+commtiy_tag = 0
+position_tag = 0
 map.on('zoomchange', function(e) {
 
-    if(map.getZoom()>12) {
+    if(map.getZoom()>12 && map.getZoom()<16 ) {
         //第一次缩放
-        if(tag===0){
+        if(position_tag===0){
+
             cluster = new AMap.MarkerClusterer(map, positions, {gridSize: 60,minClusterSize:10,maxZoom:5});
             forEach_addevent(markers, 'item.hide()');
             forEach_addevent_position(positions);
-            tag = 12;
+            qu_tag = 2
+            position_tag = 1;
         }
         //缩放到zoom:13时，清除市标志,添加position标志
-        if(tag===13){
+        if(position_tag===2){
+
             forEach_addevent(markers, 'item.hide()');
             forEach_addevent(positions,'item.show()');
-            tag = 12;
+            forEach_addevent(communitys,'item.hide()');
+            position_tag = 1;
+            qu_tag = 2;
+            if(commtiy_tag===1) {
+                commtiy_tag = 2;
+            }
         }
     }
     //缩放到zoom:12时，添加市标志,删除position标志
     if(map.getZoom()<13) {
-        if(tag===12){
+        if(qu_tag===2){
             forEach_addevent(markers, 'item.show()');
             forEach_addevent(positions,'item.hide()');
-            tag =13
+            qu_tag = 1;
+            if(position_tag===1){
+                position_tag = 2;
+            }
         }
     }
+    if(map.getZoom()>15) {
+        if(commtiy_tag===0){
+
+            forEach_addevent(positions,'item.hide()');
+            community_cluster = new AMap.MarkerClusterer(map, communitys, {gridSize: 60,minClusterSize:10,maxZoom:5});
+            forEach_addevent(communitys,'item.show()');
+            commtiy_tag = 1;
+            position_tag = 2;
+        }
+        if(commtiy_tag===2){
+
+            forEach_addevent(positions,'item.hide()');
+            forEach_addevent(communitys,'item.show()');
+            commtiy_tag = 1;
+            position_tag = 2;
+        }
+
+    }
+
 });
 
 

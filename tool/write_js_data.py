@@ -12,4 +12,3 @@ if __name__ == '__main__':
             f.write(str_data)
         f.write(']')
 
-        
