@@ -176,8 +176,17 @@ function get_data(name) {
         data: {'community':name},
         contentType: 'application/json',
         success: function (data, status) {
-            alert(data[0]['community']);
+            var li = $('#data>li');
+            li.remove();
+            data.forEach(function (item,num) {
+                if(!item['img']){
+                    item['img'] = '/static/kongfang.jpg';
+                }
+                var data_html = '<li><div class="img-left"><img src="' + item['img'] + '"></img></div> <div class="text-right"> <p class="text-tle">' + item['title'] + '</p> <p class="text-des"> <span class="sp2">' + item['house_type'] + '</span><span>' + item['area'] + '</span><span class="sp1">' + item['price'] + '<span class="sp3">元/月</span></span> </p> <p class="text-des"> <span class="sp4">' + item['community'] + '</span> </p> </div></li>'
+                var ul = $('#data');
+                ul.append(data_html);
 
+            })
         }
     })
 }
