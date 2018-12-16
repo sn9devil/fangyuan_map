@@ -88,19 +88,9 @@ div.qutag:hover {
 	padding-top: 10px;
 	border-bottom: 1px solid #e4e4e4;
 	padding-bottom: 40px;
+	height:170px;
+	position: relative;
 }
-
-.btn{
-	border: none;
-	background-color: #53B371;
-	color: floralwhite;
-	position: absolute;
-	border: 1px solid #2e8d56;
-	vertical-align: middle;
-	width: 64px;
-    height: 26px;
-}
-
 .iptext{
 	width: 80%;
 	height:25px;
@@ -111,10 +101,9 @@ div.qutag:hover {
     font-size: 12px;
     padding: 0 4px;
 }
-
 .tableft{
-    Z-index: 10;
-	width: 360px;
+    z-index: 12;
+	width: 380px;
 	border: 1px solid #e4e4e4;
 	padding: 10px;
 	display: inline-block!important;
@@ -127,37 +116,46 @@ div.qutag:hover {
     overflow-y:auto;
     overflow-x:hidden;
   -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border-width: 0;
+    border-radius: 0.4rem;
+    box-shadow: 0 2px 6px 0 rgba(114, 124, 245, .5);
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 0.75rem 1.25rem;
 }
-
 .tableft>ul{
 	width: 100%;
 	list-style: none;
 	padding: 0px !important;
 }
-
 .tableft>ul>li{
 	width: 100%;
-	padding-bottom: 10px;
-	height: 130px;
-	line-height: 130px;
+	padding-top: 10px;
+	height: 135px;
+	line-height: 135px;
 	text-align: center;
 	border-bottom: #e4e4e4 solid 1px;
 }
-
 .tableft img{
 	width: 116px;
 	height: 116px;
 }
-
 .tableft .img-left{
 	float: left;
 	height: 116px;
 }
-
 .text-right{
 	font-family: "微软雅黑";
 }
-
 .text-tle{
 	font-size: 14px;
     color: #262626;
@@ -166,55 +164,86 @@ div.qutag:hover {
     text-overflow: ellipsis;
     line-height: 1.2;
 }
-
 .text-des{
 	white-space: nowrap;
     position: relative;
     line-height: 1.2;
 	font-size: 10px;
-    margin: 10px;
+}
+.text-des>span{
+	margin-left: 7px;
 }
 
-.text-des>span{
-	margin-left: 5px;
-}
-.text-des>p{
-    padding:0 0 5px 0;
-}
 .sp1{
 	margin-left: 30px !important;
 	font-size: 16px;
 	color:crimson;
 }
-
 .sp2{
 	margin-left: 14px!important;
 }
-
 .sp3{
 	font-size: 10px!important;
 }
-
 .sp4{
-	margin-left: -35%!important;
+	position: absolute;
+	left: 130px;
 }
-
 .sp5{
 	border:1px solid slateblue;
 	color: #6A5ACD;
 	font-size: 10px;
 	float: left;
 	padding: 2px;
-	margin-left: 4%!important;
-}
+	margin-left: 5%!important;
+	margin-top: 25px;
+	}
+		.tabright{
 
-#container{
-    z-index:5;
-    height:100%;
-    width: 81.2%;
-    display: inline-block!important;
-    float: right;
-}
+            height:100%;
+			width: 72.37%;
+			display: inline-block!important;
+			float: right;
+		}
+		.tab{
+			width: 100%;
+			height: 100%;
+		}
+
+	body{
+	          margin:0;
+			  padding: 0;
+	}
+	.test-1::-webkit-scrollbar {/*滚动条整体样式*/
+        width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+        height: 1px;
+    }
+   .test-1::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+        border-radius: 10px;
+         -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        background: #535353;
+    }
+   .test-1::-webkit-scrollbar-track {/*滚动条里面轨道*/
+       background-color: #e4e4e4;
+     -webkit-border-radius: 2em;
+     -moz-border-radius: 2em;
+     border-radius:2em;
+    }
+
+		html,body,#container{
+			   height:100%;
+		   }
+		   .btn{
+			   margin-left: 0.5rem;
+			   width:4rem;
+		   }
+		   .input-card{
+			   position: absolute;
+			   left:0px;
+			   top: 0;
+			   height: 179px;
+			   width: 370px!important;
+		   }
 
 .tab{
     width: 100%;
@@ -242,4 +271,22 @@ body{
     -webkit-border-radius: 2em;
     -moz-border-radius: 2em;
     border-radius:2em;
+}
+
+
+.btn{
+   margin-left: 0.5rem;
+   width:4rem;
+}
+.input-card{
+   position: absolute;
+   left:0px;
+   top: 0;
+   height: 179px;
+   width: 370px!important;
+}
+
+.lianjie{
+    text-decoration:none;
+    color: #000000!important;
 }

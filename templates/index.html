@@ -6,43 +6,54 @@
     <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
     <title>地图显示</title>
     <link rel="stylesheet" href="../static/map.css" />
+    <link rel="stylesheet" href="https://cache.amap.com/lbs/static/jquery.range.css"/>
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/>
+
 </head>
 <body>
+
 	 <div class="tab">
 	 <div class="tableft test-1 ">
 		 <div class="search">
-			 <input width="120" height="55"  class="iptext" placeholder="输入小区或地铁站开始找房"></input>
-				 <button class="btn">搜索</button>
-			  </div>
+             <div class="input-card" style='width:25rem;z-index: 55;'>
+                 <h4 style='color:grey'>公交到达圈查询</h4>
+                 <div class="input-item">
+                     <div class="input-item-prepend"><span class="input-item-text" >出发位置</span></div>
+                     <input id='address' type="text" value = '科韵路' >
+                 </div>
+                 <div class="input-item" style='margin-bottom:2rem;'>
+                     <label>时长(分钟)</label>
+                     <input type="hidden" id="t" class="single-slider" value="30" />
+                 </div>
+
+                 <div class="input-item">
+                     <div class="input-item-prepend">
+                         <label class="input-item-text">出行方式</label>
+                     </div>
+                     <select iname="v" id="v">
+                         <option selected value ="SUBWAY,BUS">地铁+公交</option>
+                         <option value ="SUBWAY">地铁</option>
+                         <option value ="BUS">公交</option>
+                     </select>
+                     <input id="search" type="button" class="btn" value="查询" />
+                     <input id="clear" type="button" class="btn" value="清除" />
+                 </div>
+             </div>
+         </div>
+
+
 		 <ul id="data">
-			  <li>
-				 <div class="img-left">
-					 <img src="/static/kongfang.jpg"></img>
-					 </div>
-				<div class="text-right">
-					<p class="text-tle">
-						阿达的规划郭德纲的很大活的wrwrwrwerereewwrw
-						</p>
-					<p class="text-des">
-					 <span class="sp2">3室2厅</span><span>153平米</span><span>西</span><span class="sp1">17200<span class="sp3">元/月</span></span>
-					</p>
-					<p class="text-des">
-					<span class="sp4">曹大大</span>
-					</p>
-					<p class="text-des">
-						<span class="sp5">近地铁</span>
-						</p>
-					</div>
-				  </li>
-			 </ul>
+
+         </ul>
 	 </div>
-	 <div id="container">dadasad</div>
+	 <div id="container"></div>
 	</div>
 <!-- 加载地图JSAPI脚本 -->
 <script src="../static/jquery-3.3.1.min.js"></script>
-<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.11&key=a7d6b9dba1e2cd1299a5cc33996f34ba&plugin=AMap.DistrictSearch,AMap.Geocoder,AMap.Circle,AMap.MarkerClusterer"></script>
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.11&key=a7d6b9dba1e2cd1299a5cc33996f34ba&plugin=AMap.DistrictSearch,AMap.Geocoder,AMap.Circle,AMap.MarkerClusterer,AMap.ArrivalRange"></script>
 <script src="../static/data.js"></script>
 <script src="../static/map.js"></script>
+<script src="https://cache.amap.com/lbs/static/jquery.range.js"></script>
 
 </body>
 </html>

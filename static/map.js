@@ -10,7 +10,8 @@ var map = new AMap.Map('container', {
 //添加比例尺
 AMap.plugin(['AMap.Scale'],function(){
         map.addControl(new AMap.Scale());
-})
+});
+
 
 
 //行政区域 图形
@@ -79,7 +80,7 @@ function qu_markers_event() {
         //跳到下一级
         marke.on('click',function (e) {
             // var a =
-            map.setZoomAndCenter(13,marke.getPosition());
+            map.setZoomAndCenter(14,marke.getPosition());
         });
     });
 }
@@ -182,7 +183,7 @@ function get_data(name) {
                 if(!item['img']){
                     item['img'] = '/static/kongfang.jpg';
                 }
-                var data_html = '<li><div class="img-left"><img src="' + item['img'] + '"></img></div> <div class="text-right"> <p class="text-tle">' + item['title'] + '</p> <p class="text-des"> <span class="sp2">' + item['house_type'] + '</span><span>' + item['area'] + '</span><span class="sp1">' + item['price'] + '<span class="sp3">元/月</span></span> </p> <p class="text-des"> <span class="sp4">' + item['community'] + '</span> </p> </div></li>'
+                var data_html = '<li><a class="lianjie" href="'+item['url']+'" target="_blank"><div class="img-left"><img src="' + item['img'] + '"></img></div> <div class="text-right"> <p class="text-tle">' + item['title'] + '</p> <p class="text-des"> <span class="sp2">' + item['house_type'] + '</span><span>' + item['area'] + '</span><span class="sp1">' + item['price'] + '<span class="sp3">元/月</span></span> </p> <p class="text-des"> <span class="sp4">' + item['community'] + '</span> </p> </div></a></li>'
                 var ul = $('#data');
                 ul.append(data_html);
 
@@ -211,19 +212,23 @@ function forEach_addevent_position(lists){
 
 //缩放 显示
 qu_tag = 0
-commtiy_tag = 0
+commtiy_tag = 2
 position_tag = 0
 map.on('zoomchange', function(e) {
 
     if(map.getZoom()>12 && map.getZoom()<16 ) {
         //第一次缩放
         if(position_tag===0){
-
             cluster = new AMap.MarkerClusterer(map, positions, {gridSize: 60,minClusterSize:10,maxZoom:5});
+            forEach_addevent(positions,'item.show()');
             forEach_addevent(markers, 'item.hide()');
             forEach_addevent_position(positions);
-            qu_tag = 2
+            qu_tag = 2;
             position_tag = 1;
+            if(commtiy_tag===1){
+                forEach_addevent(communitys,'item.hide()');
+                commtiy_tag=2;
+            }
         }
         //缩放到zoom:13时，清除市标志,添加position标志
         if(position_tag===2){
@@ -239,31 +244,29 @@ map.on('zoomchange', function(e) {
         }
     }
     //缩放到zoom:12时，添加市标志,删除position标志
-    if(map.getZoom()<13) {
+    if(map.getZoom()<14) {
         if(qu_tag===2){
             forEach_addevent(markers, 'item.show()');
             forEach_addevent(positions,'item.hide()');
             qu_tag = 1;
+
             if(position_tag===1){
                 position_tag = 2;
+            }
+            if(commtiy_tag===2){
+                community_cluster.clearMarkers()
             }
         }
     }
     if(map.getZoom()>15) {
-        if(commtiy_tag===0){
-
-            forEach_addevent(positions,'item.hide()');
-            community_cluster = new AMap.MarkerClusterer(map, communitys, {gridSize: 60,minClusterSize:10,maxZoom:5});
-            forEach_addevent(communitys,'item.show()');
-            commtiy_tag = 1;
-            position_tag = 2;
-        }
         if(commtiy_tag===2){
 
+            community_cluster = new AMap.MarkerClusterer(map, communitys, {gridSize: 60,minClusterSize:10,maxZoom:5});
             forEach_addevent(positions,'item.hide()');
             forEach_addevent(communitys,'item.show()');
             commtiy_tag = 1;
-            position_tag = 2;
+            if(position_tag===1) {position_tag = 2;}
+
         }
 
     }
@@ -275,4 +278,123 @@ map.on('zoomchange', function(e) {
 map.on('complete', function(e) {
     qu_markers_event();
 })
+
+//坐标转换为地址
+var geocoder,click_marker;
+function regeoCode(lnglat) {
+    if(!geocoder){
+        geocoder = new AMap.Geocoder({
+            city: "020",
+            radius: 1000
+        });
+    }
+    if(!click_marker){
+        click_marker = new AMap.Marker();
+        map.add(click_marker);
+    }
+    click_marker.setPosition(lnglat);
+
+    geocoder.getAddress(lnglat, function(status, result) {
+        if (status === 'complete'&&result.regeocode) {
+            var address = result.regeocode.formattedAddress;
+            document.getElementById('address').value = address;
+        }
+    });
+}
+
+function geoCode() {
+        if(!geocoder){
+            geocoder = new AMap.Geocoder({
+                city: "020",
+            });
+        }
+        var address  = document.getElementById('address').value;
+        // alert('1');
+        geocoder.getLocation(address, function(status, result) {
+            if (status === 'complete'&&result.geocodes.length) {
+                var lnglat = result.geocodes[0].location;
+                // alert(lnglat);
+                getArriveRange(lnglat);
+            }
+        });
+    }
+
+//点击 显示范围  更新标记
+function getLnglat(e) {
+    var lnglat = e.lnglat;
+    regeoCode(lnglat);
+    getArriveRange(lnglat);
+}
+map.on( 'click', getLnglat);
+
+
+var click_marker;
+function addCenterMarker(position){
+    if(!click_marker){
+        click_marker= new AMap.Marker({
+            map: map,
+            position: position
+        });
+    }else{
+        click_marker.setPosition(position)
+    }
+}
+
+
+var arrivalRange,bus_polygons=[];
+//添加多边形覆盖物
+function getArriveRange(lnglat) {
+    if(!arrivalRange){
+        arrivalRange = new AMap.ArrivalRange()
+    }
+    // var lnglat = $("#lnglat").val().split(',');
+    var t = $("#t").val();
+    var v = $("#v").val();
+
+    addCenterMarker(lnglat);
+
+    arrivalRange.search(lnglat, t, function(status,result){
+        map.remove(bus_polygons);
+        bus_polygons = [];
+        if(result.bounds){
+            for(var i=0;i<result.bounds.length;i++){
+               var polygon = new AMap.Polygon({
+                    fillColor:"#3366FF",
+                    fillOpacity:"0.4",
+                    strokeColor:"#00FF00",
+                    strokeOpacity:"0.5",
+                    strokeWeight:1
+                });
+                polygon.setPath(result.bounds[i]);
+                bus_polygons.push(polygon);
+            }
+            map.add(bus_polygons);
+            map.setCenter(lnglat);
+            map.setZoom(16);
+        }
+    },{
+        policy:v
+    });
+}
+
+
+var isChanged=false;
+$(function(){
+    $('.single-slider').jRange({
+        onstatechange: geoCode,
+        from: 1,
+        to: 45,
+        step: 1,
+        scale: [1,15,30,45],
+        format: '%s',
+        width: 400,
+        showLabels: true,
+        showScale: true
+    });
+});
+
+
+$('#search').on('click', geoCode);
+$('#v').on('change', geoCode);
+$('#clear').on('click', function(){map.remove(bus_polygons);map.remove(click_marker)});
 
